@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.">
-  <title> To-Do List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -18,16 +18,15 @@
     }
 
     .container {
-      background:rgba(25, 255, 255, 0.);
+      background: rgba(25, 25, 25, 0.4);
       backdrop-filter: blur(20px);
-      border-radius:15px;
+      border-radius: 15px;
       padding: 25px;
       width: 100%;
       max-width: 600px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.3);
       animation: fadeIn 1s ease-in-out;
     }
-  
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
@@ -67,8 +66,8 @@
     }
 
     button {
-      background:white
-      color: white;
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
       font-weight: bold;
@@ -76,8 +75,7 @@
     }
 
     button:hover {
-      background: linear-gradient(135deg, #dd2476, #ff512f);
-      transform: scale(1.sec);
+      transform: scale(1.05);
     }
 
     .filter-group {
@@ -108,15 +106,12 @@
       align-items: center;
       box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
       transition: transform 0.3s ease, background 0.3s ease;
+      animation: fadeIn 0.5s ease;
     }
 
     li:hover {
       transform: translateY(-3px);
       background: rgba(255,255,255,0.25);
-    }
-
-    li span {
-      display: block;
     }
 
     .task-text {
@@ -164,12 +159,11 @@
 </head>
 <body>
   <div class="container">
-    <h1>my To-Do List <h1>
+    <h1>My To-Do List</h1>
 
     <div class="input-group">
       <input type="text" id="taskInput" placeholder="Enter your task...">
-      <input type="datetime-local"
-      id="dateTimeInput">
+      <input type="datetime-local" id="dateTimeInput">
       <button onclick="addTask()">➕ Add Task</button>
     </div>
 
@@ -203,6 +197,7 @@
       }
 
       const task = {
+        id: Date.now(),
         text: taskText,
         dateTime: taskDateTime,
         completed: false
@@ -220,7 +215,8 @@
 
       const taskContent = document.createElement("span");
       const date = new Date(task.dateTime);
-      taskContent.innerHTML = `<div class="task-text ${task.completed ? "completed" : ""}">
+      taskContent.innerHTML = `
+        <div class="task-text ${task.completed ? "completed" : ""}">
           ${task.text}
         </div>
         <div class="task-time">📅 ${date.toLocaleString()}</div>`;
@@ -242,7 +238,7 @@
       deleteBtn.classList.add("delete-btn");
       deleteBtn.onclick = () => {
         li.remove();
-        removeTask(task);
+        removeTask(task.id);
       };
 
       buttonGroup.appendChild(completeBtn);
@@ -266,18 +262,14 @@
 
     function updateTask(updatedTask) {
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      tasks = tasks.map(task => 
-        task.text === updatedTask.text && task.dateTime === updatedTask.dateTime
-          ? updatedTask
-          : task
-      );
+      tasks = tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
       localStorage.setItem("tasks", JSON.stringify(tasks));
       filterTasks();
     }
 
-    function removeTask(taskToRemove) {
+    function removeTask(taskId) {
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      tasks = tasks.filter(task => task.text !== taskToRemove.text || task.dateTime !== taskToRemove.dateTime);
+      tasks = tasks.filter(task => task.id !== taskId);
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
